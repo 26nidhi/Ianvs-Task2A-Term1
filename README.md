@@ -39,7 +39,7 @@ This document tells the complete, honest story of getting KubeEdge-Ianvs running
 
 ### Screenshot: Docker environment verified
 
-![Docker version and images](1771171057000_Screenshot_2026-02-15_195005.png)
+![Docker version and images](1.png)
 
 ---
 
@@ -101,7 +101,7 @@ ModuleNotFoundError: No module named 'retry'
 
 ### Screenshot: First error — missing `retry` module
 
-![ModuleNotFoundError retry](1771171057002_Screenshot_2026-02-15_195142.png)
+![ModuleNotFoundError retry](2.png)
 
 **Root Cause:** The `retry` package is used in `api_llm.py` for API call retries but is not included in the base conda environment.
 
@@ -113,7 +113,7 @@ pip install retry
 
 ### Screenshot: `retry` installed successfully
 
-![pip install retry](1771171057003_Screenshot_2026-02-15_195226.png)
+![pip install retry](3.png)
 
 ```
 Successfully installed decorator-5.2.1 py-1.11.0 retry-0.9.2
@@ -143,7 +143,7 @@ WARNING: Failed to import from vllm._C — libcuda.so.1: No such file or directo
 
 ### Screenshot: LadeSpecDecLLM import error + CUDA warning
 
-![LadeSpecDecLLM error](1771171057004_Screenshot_2026-02-15_195315.png)
+![LadeSpecDecLLM error](4.png)
 
 **Root Cause:** `edge_model.py` imports `LadeSpecDecLLM` which is referenced in the code but not yet defined in `models/__init__.py` — this is an in-progress feature in the codebase. Since we are on a CPU-only machine, we also cannot use vLLM.
 
@@ -166,7 +166,7 @@ grep LadeSpecDec \
 
 ### Screenshot: LadeSpecDec successfully removed
 
-![sed fix LadeSpecDec](1771171057004_Screenshot_2026-02-15_195448.png)
+![sed fix LadeSpecDec](5.png)
 
 ---
 
@@ -251,7 +251,7 @@ EOF
 
 ### Screenshot: Clean YAML config with all 4 modules
 
-![YAML config](1771171114525_Screenshot_2026-02-15_200400.png)
+![YAML config](7.png)
 
 > 💡 **Key Insight:** `jointinference` paradigm **requires** all three of `edgemodel`, `cloudmodel`, and `hard_example_mining` to be defined in the YAML, even if the router (`EdgeOnly`) never calls the cloud model. This caused several failed runs before I realized it.
 
@@ -268,7 +268,7 @@ ValueError: Base URL not found in environment variable: https://api.openai.com/v
 
 ### Screenshot: Base URL env var error
 
-![Base URL error](1771171114525_Screenshot_2026-02-15_201046.png)
+![Base URL error](8.png)
 
 **Root Cause (important nuance):** The `api_base_url` field in the YAML does **not** take a literal URL — it takes the **name of an environment variable** that *contains* the URL. The code does `os.environ[api_base_url]` under the hood.
 
@@ -283,7 +283,7 @@ export DUMMY_BASE=https://api.openai.com/v1
 
 ### Screenshot: Dummy env vars exported
 
-![export dummy vars](1771171131953_Screenshot_2026-02-15_201220.png)
+![export dummy vars](9.png)
 
 ---
 
@@ -309,7 +309,7 @@ sed -i 's/dataset = dataset\[:10\]/dataset.x = dataset.x[:10]\n        dataset.y
 
 ### Screenshot: Correct data_processor.py fix applied
 
-![data processor fix](1771171131954_Screenshot_2026-02-15_201350.png)
+![data processor fix](10.png)
 
 **Also reduced `max_tokens` from 256 → 32 for speed:**
 
@@ -338,7 +338,7 @@ ianvs -f examples/cloud-edge-collaborative-inference-for-llm/benchmarkingjob.yam
 
 ### Screenshot: Final successful run — inference + leaderboard output
 
-![Successful run](1771171131955_Screenshot_2026-02-15_201421.png)
+![Successful run](11.png)
 
 ### Key Log Excerpts
 
