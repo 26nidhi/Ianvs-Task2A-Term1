@@ -1,4 +1,4 @@
-# 🚀 RUNLOG — Cloud-Edge Collaborative Inference for LLM (KubeEdge-Ianvs)
+# RUNLOG — Cloud-Edge Collaborative Inference for LLM (KubeEdge-Ianvs)
 
 <p align="center">
   <img src="https://img.shields.io/badge/Status-SUCCESS-brightgreen?style=for-the-badge"/>
@@ -16,13 +16,7 @@
 
 ---
 
-## 📖 The Story
-
-This document tells the complete, honest story of getting KubeEdge-Ianvs running from scratch — every error hit, every fix applied, and exactly how the final benchmark was achieved. No steps are skipped, no errors are hidden. A reproducible path is laid out below so that anyone — including you, the maintainer — can replicate this run exactly.
-
----
-
-## 🖥️ 1. Environment Information
+## 1. Environment Information
 
 | Property | Value |
 |---|---|
@@ -33,7 +27,7 @@ This document tells the complete, honest story of getting KubeEdge-Ianvs running
 | **Conda Env** | `ianvs-experiment` |
 | **Python Version** | `3.8` |
 | **Ianvs Version** | `0.1.0` |
-| **GPU / CUDA** | ⚠️ **None** — CPU-only run (no `libcuda.so.1`); vLLM backend unavailable |
+| **GPU / CUDA** | **None** — CPU-only run (no `libcuda.so.1`); vLLM backend unavailable |
 | **Edge Model** | `TinyLlama/TinyLlama-1.1B-Chat-v1.0` (HuggingFace, ~2.2 GB) |
 | **Cloud Model** | `gpt-4o-mini` via OpenAI API (later replaced by EdgeOnly mode) |
 
@@ -68,7 +62,7 @@ You should see your prompt change to:
 (ianvs-experiment) root@<container-id>:/ianvs#
 ```
 
-> 💡 **Why this image?** It bundles all heavy ML dependencies (PyTorch, HuggingFace Transformers, vLLM stubs, Sedna, Ianvs) so you don't have to install them from scratch.
+>  **Why this image?** It bundles all heavy ML dependencies (PyTorch, HuggingFace Transformers, vLLM stubs, Sedna, Ianvs) so you don't have to install them from scratch.
 
 ---
 
@@ -91,7 +85,7 @@ ls examples/cloud-edge-collaborative-inference-for-llm/
 ianvs -f examples/cloud-edge-collaborative-inference-for-llm/benchmarkingjob.yaml
 ```
 
-<h3><u>❌ Error Encountered:</u></h3>
+<h3><u> Error Encountered:</u></h3>
 
 ```
 ModuleNotFoundError: No module named 'retry'
@@ -129,7 +123,7 @@ Successfully installed decorator-5.2.1 py-1.11.0 retry-0.9.2
 ianvs -f examples/cloud-edge-collaborative-inference-for-llm/benchmarkingjob.yaml
 ```
 
-<h3><u>❌ Error Encountered:</u></h3>
+<h3><u> Error Encountered:</u></h3>
 
 ```
 ImportError: cannot import name 'LadeSpecDecLLM' from 'models'
@@ -253,13 +247,13 @@ EOF
 
 ![YAML config](7.png)
 
-> 💡 **Key Insight:** `jointinference` paradigm **requires** all three of `edgemodel`, `cloudmodel`, and `hard_example_mining` to be defined in the YAML, even if the router (`EdgeOnly`) never calls the cloud model. This caused several failed runs before I realized it.
+> **Key Insight:** `jointinference` paradigm **requires** all three of `edgemodel`, `cloudmodel`, and `hard_example_mining` to be defined in the YAML, even if the router (`EdgeOnly`) never calls the cloud model. This caused several failed runs before I realized it.
 
 ---
 
 ### Step 6 — Apply Fix #3: Cloud Model Env Var Configuration
 
-<h3><u>❌ Error Encountered (multiple rounds):</u></h3>
+<h3><u> Error Encountered (multiple rounds):</u></h3>
 
 ```
 ValueError: API key not found in environment variable: OPENAI_API_KEY
@@ -293,7 +287,7 @@ Running inference on the full GPQA dataset (198 samples) with TinyLlama on CPU a
 
 **Problem discovered:** Simply doing `dataset = dataset[:10]` in `data_processor.py` failed because the Sedna `BaseDataSource` object is not directly subscriptable.
 
-<h3><u>❌ Errors hit:</u></h3>
+<h3><u> Errors hit:</u></h3>
 
 ```
 UnboundLocalError: local variable 'data' referenced before assignment
@@ -324,7 +318,7 @@ grep max_tokens -A2 \
 
 ---
 
-### Step 8 — Final Run ✅
+### Step 8 — Final Run 
 
 With all fixes in place, run the benchmark:
 
@@ -334,7 +328,7 @@ ianvs -f examples/cloud-edge-collaborative-inference-for-llm/benchmarkingjob.yam
 
 ---
 
-## ✅ 3. Evidence of Success
+##  3. Evidence of Success
 
 ### Screenshot: Final successful run — inference + leaderboard output
 
@@ -387,7 +381,7 @@ ianvs -f examples/cloud-edge-collaborative-inference-for-llm/benchmarkingjob.yam
 
 ---
 
-## 🔁 5. Complete Reproducible Command Sequence (Copy-Paste Ready)
+##  5. Complete Reproducible Command Sequence (Copy-Paste Ready)
 
 ```bash
 # === OUTSIDE CONTAINER ===
@@ -481,7 +475,7 @@ ianvs -f examples/cloud-edge-collaborative-inference-for-llm/benchmarkingjob.yam
 
 ---
 
-## 💡 6. Lessons Learned & Notes for Maintainers
+##  6. Lessons Learned & Notes for Maintainers
 
 1. **`LadeSpecDecLLM` is not yet in `models/__init__.py`** — this will cause `ImportError` for anyone pulling the latest `edge_model.py`. Either add it to `__init__.py` or guard the import. This is a minor but blocking issue for new contributors.
 
@@ -496,7 +490,7 @@ ianvs -f examples/cloud-edge-collaborative-inference-for-llm/benchmarkingjob.yam
 ---
 
 <p align="center">
-  <b>🎯 Benchmark completed successfully on CPU-only hardware using TinyLlama-1.1B + EdgeOnly routing.</b><br/>
+  <b> Benchmark completed successfully on CPU-only hardware using TinyLlama-1.1B + EdgeOnly routing.</b><br/>
   <i>All errors encountered, root-caused, and resolved. Full reproducibility confirmed.</i>
 </p>
 
